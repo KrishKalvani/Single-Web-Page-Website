@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" type="text/css" rel="stylesheet"><!--link to CSS page-->
+    <script  src="init.js"></script>
+    <script  src="client2.js"></script>
+    <script  src="demo.js"></script>
+    <!-- <script src="RegistrationValidation.js"></script> -->
+
+   
+
+    <title>JustMovies- Home</title>
+</head>
+<body id="body"><!--start of body-->
+    <nav style="font-family: Arial, Helvetica, sans-serif;" id="navigation"> <!--navigation bar-->
+        <a href="MainPage.html"><img style="width: 50%; height: 30%;" src="../images/JustMoviesLogo.png" alt="justmoviesLogo"></a>
+        <a style="margin-left:-8%; margin-top:1%; color: white;" href="MainPage.html" onclick="toggleHomeContent()">HOME</a>
+        <div id="Profile">
+        <p style="color: white;">Hello User</p>
+        </div>
+        <div id="rightContent">
+        <a  style="color: white; margin-left: 89%;" onclick="toggleRegisterBox()">REGISTER/LOGIN</a>
+        </div>
+    </nav>
+    <!--movie content which will hide when user clicks on the register/login button-->
+
+    <div style="margin-left:4%;" id="movies">
+        <p style="font-family: Arial, Helvetica, sans-serif; margin-left: 5%;">Select a movie to post a review</p>
+        <div style="margin-left:50%; margin-top:-2%;">
+        <label style="font-family: Arial, Helvetica, sans-serif;">Search:</label>
+        <input type="search" placeholder="Search movies...">
+        </div><br>
+        
+    
+    </div>
+    <!-- <img style="height:150px; width:120px; margin-top:-79%; position: absolute; margin-left:13%;" src="../images/spiderman2.jpg">
+    <img style="height:130px; width:100px; margin-top:-56.5%; position: absolute; margin-left:14%;" src="../images/titanic.jpg">
+    <img style="height:130px; width:100px; margin-top:-35%; position: absolute; margin-left:14%;" src="../images/21.jpg"> -->
+
+
+   
+    
+    
+    <!-- <div id="commentDiv">
+
+    </div> -->
+
+    <!--add movie box-->
+    <div style="width: 20%; margin-top:-80%; margin-left: 75%; padding-left: 2%;" id="myMovieBox"><br>
+        <h2 style="color: white; font-family: Arial, Helvetica, sans-serif;">ADD MOVIE HERE!</h2>
+        <form onsubmit="return false" action="/upload" method="post" encType="multipart/form-data">
+            <table style="color: white; font-family: Arial, Helvetica, sans-serif; text-align: center;">
+                <tr>
+                    <td> image:</td>
+                    <td><input type="file" id="FileInput" name="myFile"></td>
+                    <td><button style="margin-left:-500%; margin-top:100%;" onclick="uploadFile()">Upload</button>
+                    <div id="ServerResponse"></div></td> 
+                    <!-- <td><input type='submit' value='upload' /></td> -->
+                </tr>
+                <tr>
+                    <td><label>Title:</label></td>
+                    <td><input type="text" id="movieName"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Review:</label></td>
+                    <td><input type="text" id="movieReview"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Rating:</td>
+                   
+                   <td>
+                       <select id="movieRating">
+                       <option>0/10</option> 
+                       <option>1/10</option> 
+                       <option>2/10</option>  
+                       <option>3/10</option>  
+                       <option>4/10</option>
+                       <option>5/10</option>
+                       <option>6/10</option> 
+                       <option>7/10</option>  
+                       <option>8/10</option>  
+                       <option>9/10</option>
+                       <option>10/10</option>
+      
+                       </select></td>
+                       <td></td>
+               </tr>
+                </table>
+                <br>
+            <button style="background-color: #B2B4F2; margin-left:50%;" type="submit" onclick="addMovie()">ADD</button>
+            <p id="addMovieResult"></p>
+            <br><br>
+        </form>
+
+
+
+        
+
+
+    </div>
+    <script>
+        //Reference to server response div
+        let serverResponse = document.getElementById("ServerResponse");
+
+        //Uploads the selected file to the server
+        function uploadFile(){
+            //Clear server response
+            serverResponse.innerHTML = "";
+
+            //Get file that we want to upload
+            let fileArray = document.getElementById("FileInput").files;
+            if(fileArray.length !== 1){
+                serverResponse.innerHTML = "Please select file to upload.";
+                return;
+            }
+
+            //Put file inside FormData object
+            const formData = new FormData();
+            formData.append('myFile', fileArray[0]);
+
+            //Set up HTTP Request
+            let httpReq = new XMLHttpRequest();
+            httpReq.onload = () => {
+                let response = JSON.parse(httpReq.responseText);
+                if("error" in response)//Error from server
+                    serverResponse.innerHTML = response.error;
+                else
+                    serverResponse.innerHTML = "File uploaded successfully";
+            };
+
+            //Send off message to upload file
+            httpReq.open('POST', '/upload');
+            httpReq.send(formData);
+        }
+    </script> 
+
+
+
+
+
+    <!--registration and login forms in one div-->
+    <div style="height: 10%; width: 65%; margin-top:5%; margin-left: 15%; padding-left: 2%; display: none;" id="registerBox"><br>
+        <h1 style="font-family: Arial, Helvetica, sans-serif;color: white;">Registration</h1><br>
+        <form onsubmit="return false">
+            <table style="color: white; font-family: Arial, Helvetica, sans-serif; text-align: center;">
+                <tr>
+                    <td><label>Name:</label></td>
+                    <td><input id="RegisterName" type="text"></td>
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td><input id="RegisterEmail" type="text"></td>
+                </tr>
+                <tr>
+                    <td><label>Username:</label></td>
+                    <td><input id="RegisterUsername" type="text"></td>
+                </tr>
+                <tr>
+                    <td><label>Password:</label></td>
+                    <td><input id="RegisteroriginalPwd" type="password"></td>
+                </tr>
+                <tr>
+                    <td><label>Confirm Password:</label></td>
+                    <td><input id="RegisterconfirmPwd" type="password"></td>
+                </tr>
+            </table>
+            <br>
+            <button style="background-color: #B2B4F2; margin-left:20%;" type="submit" onclick="register();"  >REGISTER</button>
+            <br><br><br><br><br><br><br><br>
+
+        </form>
+        <!-- <div id="UsersDiv">
+
+        </div> -->
+        <div>
+            <p id="addUserResult"></p>
+        </div>
+    
+
+    <!--login form-->
+    
+        <h1 style="font-family: Arial, Helvetica, sans-serif;color: white; margin-top:-36.5%; margin-left: 50%;">Login</h1><br>
+        <form onsubmit="return false">
+            <table style="color: white; font-family: Arial, Helvetica, sans-serif; text-align: center;">
+                <tr>
+                    <td ><label style=" margin-top:-26.5%; margin-left: 700%;">Username:</label></td>
+                    <td><input style=" margin-top:-26.5%; margin-left: 340%;" type="text" id="LoginName"></td>
+                </tr>
+                <tr>
+                    <td><label style=" margin-top:-26.5%; margin-left: 700%;">Password:</label></td>
+                    <td><input style=" margin-top:-26.5%; margin-left: 340%;" type="password" id="LoginPassword"></td>
+                </tr>
+            </table>
+            <br>
+            <button style="background-color: #B2B4F2; margin-left:75%;" type="submit" onclick="login()">LOGIN</button>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+        </form>
+        <p id="loginUserDiv"></p>
+
+    </div>
+    
+    <div style="width:100%;" id="footerDiv">
+        <p  style="color: white; text-align: center; font-family: Arial, Helvetica, sans-serif;">Web Page made by Krish Kalvani(1920x1080)</p>
+    </div>
+    <script>//this will hide and show the contents of the page
+        function toggleRegisterBox() {
+            let registerLoginContent = document.getElementById("registerBox");
+            let movies = document.getElementById("movies");
+            // let profileBox = document.getElementById("myProfileBox");
+            var movieBox = document.getElementById("myMovieBox");
+            let group = [movies, movieBox]
+            
+    
+
+            if (registerLoginContent.style.display === "none") {
+                console.log("I ran!")
+                registerLoginContent.style.display = "block";
+                group.forEach(element => {
+                    element.style.display = "none"
+                });
+
+            }
+        }
+    </script>
+    
+</body> <!--end of body-->
+</html>
